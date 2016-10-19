@@ -1,0 +1,78 @@
+@(invoiceForm: Form[Invoice])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("invoicexpress") {
+
+	<h3>Nova factura</h3>
+ 
+	@form(routes.BillingController.newInvoice()) {
+	
+		<h4>Detalhes do Documento</h4>
+	
+		@inputText(invoiceForm("date"), '_label -> "Data:", 'type -> "date")
+		@select(
+			invoiceForm("validate"), 
+			options("1" -> "15 dias", "2" -> "30 dias", "3" -> "45 dias", "3" -> "60 dias", "3" -> "Outra..." ),
+			'_label -> "Vence:", 
+			'_default -> "Ponto Pagamento",
+			'_showConstraint -> false
+		)
+		@inputText(invoiceForm("reference"), '_label -> "V/ Ref.:")
+		@select(
+			invoiceForm("isencaoIVA"), 
+			options("1" -> "Artigo 16º nº 6 do CIVA.", "2" -> "Artigo 6º do Decreto‐Lei nº 198/90, de 19 de Junho.", "3" -> "Exigibilidade de caixa.", "3" -> "Isento Artigo 13º do CIVA.", "3" -> "Isento Artigo 14º do CIVA.", "4" -> "Não sujeito; não tributado (ou similar)" ),
+			'_label -> "Razão de isenção de IVA:", 
+			'_default -> "Sem Isenção.",
+			'_showConstraint -> false
+		)
+		@inputText(invoiceForm("description"), '_label -> "Observações:")
+		@inputText(invoiceForm("retention"), '_label -> "Retenção %")
+		@select(
+			invoiceForm("currency"), 
+			options(
+				"1" -> "Real (R$)", 
+				"2" -> "U.S. dollar ($)", 
+				"3" -> "Pound sterling (£)", 
+				"4" -> "Canadian dollar (C$)", 
+				"5" -> "Australian dollar ($)", 
+				"6" -> "Angolan kwanza (Kz)",
+				"7" -> "Argentine peso ($)",
+				"8" -> "Aruban florin (ƒ)",
+				"9" -> "Belarusian ruble (Br)"
+			), 
+			'_label -> "Moeda:", 
+			'_default -> "Euro (€)",
+			'_showConstraint -> false
+		)
+		
+		<h4>Dados do Cliente</h4>
+		
+		@inputText(
+			invoiceForm("client.name"), 
+			'_label -> "Cliente:",
+			'_help -> "Digite o nome do seu cliente. Caso seja um cliente existente, os restantes dados serão preenchidos automaticamente. Se for um novo cliente, preencha os restantes dados que o mesmo será criado quando salvar a sua factura.",
+			'_showConstraints -> false
+		)
+		@inputText(invoiceForm("client.nif"), '_label -> "Contribuinte:")
+		@inputText(invoiceForm("client.email"), '_label -> "Email:")
+		@inputText(invoiceForm("client.address"), '_label -> "Endereço:")
+		@inputText(invoiceForm("client.cep"), '_label -> "Cód. Postal:")
+		@inputText(invoiceForm("client.country"), '_label -> "País:")
+		
+		<h4>Itens</h4>
+		
+		@inputText(invoiceForm("items.reference"), '_label -> "Código de Item")
+		@inputText(invoiceForm("items.description"), '_label -> "Descrição")
+		@inputText(invoiceForm("items.price"), '_label -> "Preço Un.")
+		@inputText(invoiceForm("items.quantity"), '_label -> "Qtd.")
+		@inputText(invoiceForm("items.unit"), '_label -> "Unidade")
+		@inputText(invoiceForm("items.iva"), '_label -> "IVA")
+		@inputText(invoiceForm("items.descount"), '_label -> "Desconto %")
+	
+		<input type="submit" value="Guardar como Rascunho" />
+		<a href="@routes.BillingController.invoices()" class="btn">Voltar</a>
+	}
+
+}
